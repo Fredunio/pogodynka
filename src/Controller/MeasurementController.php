@@ -16,6 +16,7 @@ class MeasurementController extends AbstractController
     #[Route('/', name: 'app_measurement_index', methods: ['GET'])]
     public function index(MeasurementRepository $measurementRepository): Response
     {
+        
         return $this->render('measurement/index.html.twig', [
             'measurements' => $measurementRepository->findAll(),
         ]);
@@ -24,6 +25,8 @@ class MeasurementController extends AbstractController
     #[Route('/new', name: 'app_measurement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, MeasurementRepository $measurementRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MEASUREMENT_NEW');
+
         $measurement = new Measurement();
         $form = $this->createForm(MeasurementType::class, $measurement);
         $form->handleRequest($request);
@@ -43,6 +46,8 @@ class MeasurementController extends AbstractController
     #[Route('/{id}', name: 'app_measurement_show', methods: ['GET'])]
     public function show(Measurement $measurement): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MEASUREMENT_SHOW');
+
         return $this->render('measurement/show.html.twig', [
             'measurement' => $measurement,
         ]);
@@ -51,6 +56,8 @@ class MeasurementController extends AbstractController
     #[Route('/{id}/edit', name: 'app_measurement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Measurement $measurement, MeasurementRepository $measurementRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MEASUREMENT_EDIT');
+
         $form = $this->createForm(MeasurementType::class, $measurement);
         $form->handleRequest($request);
 
@@ -69,6 +76,8 @@ class MeasurementController extends AbstractController
     #[Route('/{id}', name: 'app_measurement_delete', methods: ['POST'])]
     public function delete(Request $request, Measurement $measurement, MeasurementRepository $measurementRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MEASUREMENT_DELETE');
+
         if ($this->isCsrfTokenValid('delete'.$measurement->getId(), $request->request->get('_token'))) {
             $measurementRepository->remove($measurement, true);
         }

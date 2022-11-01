@@ -16,6 +16,7 @@ class LocationController extends AbstractController
     #[Route('/', name: 'app_location_index', methods: ['GET'])]
     public function index(LocationRepository $locationRepository): Response
     {
+        // $this->denyAccessUnlessGranted('ROLE_ADMIN');
         return $this->render('location/index.html.twig', [
             'locations' => $locationRepository->findAll(),
         ]);
@@ -24,6 +25,8 @@ class LocationController extends AbstractController
     #[Route('/new', name: 'app_location_new', methods: ['GET', 'POST'])]
     public function new(Request $request, LocationRepository $locationRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_LOCATION_NEW');
+
         $location = new Location();
         $form = $this->createForm(LocationType::class, $location, ['validation_groups' => ['new'],]);
         $form->handleRequest($request);
@@ -43,6 +46,8 @@ class LocationController extends AbstractController
     #[Route('/{id}', name: 'app_location_show', methods: ['GET'])]
     public function show(Location $location): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_LOCATION_SHOW');
+
         return $this->render('location/show.html.twig', [
             'location' => $location,
         ]);
@@ -51,6 +56,8 @@ class LocationController extends AbstractController
     #[Route('/{id}/edit', name: 'app_location_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Location $location, LocationRepository $locationRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_LOCATION_EDIT');
+
         $form = $this->createForm(LocationType::class, $location,[ 'validation_groups' => ['edit']]);
         $form->handleRequest($request);
 
@@ -69,6 +76,8 @@ class LocationController extends AbstractController
     #[Route('/{id}', name: 'app_location_delete', methods: ['POST'])]
     public function delete(Request $request, Location $location, LocationRepository $locationRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_LOCATION_DELETE');
+
         if ($this->isCsrfTokenValid('delete'.$location->getId(), $request->request->get('_token'))) {
             $locationRepository->remove($location, true);
         }
