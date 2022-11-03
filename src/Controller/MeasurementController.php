@@ -56,7 +56,7 @@ class MeasurementController extends AbstractController
     #[Route('/{id}/edit', name: 'app_measurement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Measurement $measurement, MeasurementRepository $measurementRepository): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_MEASUREMENT_EDIT');
+        // $this->denyAccessUnlessGranted('ROLE_MEASUREMENT_EDIT');
 
         $form = $this->createForm(MeasurementType::class, $measurement);
         $form->handleRequest($request);

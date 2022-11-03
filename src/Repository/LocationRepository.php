@@ -21,6 +21,18 @@ class LocationRepository extends ServiceEntityRepository
         parent::__construct($registry, Location::class);
     }
 
+    public function findLocation($countryCode, $cityName)
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->where('m.country = :countryCode')
+            ->setParameter('countryCode', $countryCode)
+            ->andWhere('m.city = :cityName')
+            ->setParameter('cityName', $cityName);
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
     public function save(Location $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

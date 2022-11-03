@@ -1,14 +1,22 @@
 security:
+    role_hierarchy:
+        ROLE_MODERATOR: [ROLE_LOCATION_SHOW,ROLE_LOCATION_EDIT,ROLE_LOCATION_NEW, ROLE_MEASUREMENT_SHOW,ROLE_MEASUREMENT_EDIT,ROLE_MEASUREMENT_NEW]
+        ROLE_ADMIN: [ROLE_USER, ROLE_MODERATOR]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
     enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\User:
+            algorithm: auto
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory:
-            memory:
-                users:
-                    admin: {password: '12345', roles: "ROLE_ADMIN"}
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
 
         # { memory: null }
     firewalls:
@@ -17,9 +25,14 @@ security:
             security: false
         main:
             lazy: true
-            provider: users_in_memory
-            http_basic:
-                realm: Secured Area
+            provider: app_user_provider
+            # http_basic:
+            #     realm: My Secured Area
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
