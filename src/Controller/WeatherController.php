@@ -10,10 +10,10 @@ use App\Service\WeatherUtil;
 
 class WeatherController extends AbstractController
 {
-    public function cityAction(Location $city, WeatherUtil $weatherUtil,  MeasurementRepository $measurementRepository): Response
+    public function cityAction(Location $city, WeatherUtil $weatherUtil): Response
     {
-        $measurements = $measurementRepository->findByLocation($city);
-        // $measurements = $weatherUtil->getWeatherForLocation($city);
+        // $measurements = $measurementRepository->findByLocation($city);
+        $measurements = $weatherUtil->getWeatherForLocation($city);
      
         return $this->render('weather/city.html.twig', [
             'location' => $city,

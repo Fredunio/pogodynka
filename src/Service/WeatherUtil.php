@@ -8,15 +8,24 @@ use App\Entity\Location;
 
 class WeatherUtil 
 {
-    public function getWeatherForCountryAndCity($countryCode, $cityName, LocationRepository $locationRepository, MeasurementRepository $measurementRepository): string
+    private LocationRepository $locationRepository ;
+    private MeasurementRepository $measurementRepository;
+
+    public function __construct(LocationRepository $locationRepository, MeasurementRepository $measurementRepository)
     {
-       $location = $locationRepository->findLocation($countryCode, $cityName);
-       $measurements = $measurementRepository->findByLocation($location);
+        $this->locationRepository= $locationRepository;
+        $this->measurementRepository= $measurementRepository;
+    }
+
+    public function getWeatherForCountryAndCity($countryCode, $cityName): string
+    {
+       $location = $this->locationRepository->findLocation($countryCode, $cityName);
+       $measurements = $this->measurementRepository->findByLocation($location);
         return $measurements;
     }
-    public function getWeatherForLocation(Location $location, MeasurementRepository $measurementRepository): string
+    public function getWeatherForLocation(Location $location): string
     {
-        $measurements = $measurementRepository->findByLocation($location);
+        $measurements = $this->measurementRepository->findByLocation($location);
         return $measurements;
     }
 }
